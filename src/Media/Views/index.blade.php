@@ -38,6 +38,7 @@
                   <th scope="col" class="py-3.5 pr-3 pl-4 text-left text-sm font-semibold text-gray-900 sm:pl-6 dark:text-gray-200">Sort</th>
                   <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-200">Title</th>
                   <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-200">Slug</th>
+                  <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-200">File</th>
                   <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-200">Status</th>
                   <th scope="col" class="py-3.5 pr-4 pl-3 sm:pr-6">
                     <span class="sr-only">Edit</span>
@@ -51,6 +52,14 @@
                       <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">{{ $item->title }}</td>
                       <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">{{ $item->slug }}</td>
                       <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
+                        @php $file = $item->getFirstMedia('media'); @endphp
+                        @if ($file)
+                          <a href="{{ $file->getUrl() }}" target="_blank" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">{{ strtoupper($file->extension) }}</a>
+                        @else
+                          —
+                        @endif
+                      </td>
+                      <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
                         @if ($item->published)
                           <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-green-600/20 ring-inset dark:bg-green-900/30 dark:text-green-400 dark:ring-green-500/50">Published</span>
                         @else
@@ -59,6 +68,28 @@
                       </td>
                       <td class="py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-6">
                         <a href="{{ route('admin.media.edit', $item) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">Edit<span class="sr-only">, </span></a>
+                        <span>/</span>
+                        <div x-data="{}" class="inline-block">
+                          <form x-ref="deleteForm" :action="`{{ route('admin.media.destroy', $item) }}`" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="button"
+                              @click="Swal.fire({
+                                title: 'Are you sure?',
+                                text: 'You won\'t be able to revert this!',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Yes, delete it!'
+                              }).then((result) => {
+                                if (result.isConfirmed) {
+                                  $refs.deleteForm.submit();
+                                }
+                              })"
+                              class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">Delete<span class="sr-only">, </span></button>
+                          </form>
+                        </div>
                       </td>
                     </tr>                 
                 @endforeach               
@@ -75,7 +106,7 @@
 
 @endsection
 
-@section('custom_script')
+@push('admin_script')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const sortableTableBody = document.getElementById('sortable');
@@ -126,4 +157,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
-@endsection
+@endpush
