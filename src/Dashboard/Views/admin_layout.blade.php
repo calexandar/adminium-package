@@ -49,7 +49,7 @@
     <el-dialog-backdrop class="fixed inset-0 bg-gray-900/80 transition-opacity duration-300 ease-linear data-closed:opacity-0"></el-dialog-backdrop>
 
     <div tabindex="0" class="fixed inset-0 flex focus:outline-none">
-      <el-dialog-panel class="group/dialog-panel relative mr-16 flex w-full max-w-xs flex-1 transform transition duration-300 ease-in-out data-closed:-translate-x-full">
+      <el-dialog-panel class="group/dialog-panel relative mr-16 flex w-full max-w-56 flex-1 transform transition duration-300 ease-in-out data-closed:-translate-x-full">
         <div class="absolute top-0 left-full flex w-16 justify-center pt-5 duration-300 ease-in-out group-data-closed/dialog-panel:opacity-0">
           <button type="button" command="close" commandfor="sidebar" class="-m-2.5 p-2.5">
             <span class="sr-only">Close sidebar</span>
@@ -60,7 +60,7 @@
         </div>
 
         <!-- Sidebar component, swap this element with another sidebar if you like -->
-        <div class="relative flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4 dark:bg-gray-900 dark:ring dark:ring-white/10 dark:before:pointer-events-none dark:before:absolute dark:before:inset-0 dark:before:bg-black/10">
+        <div class="admin-sidebar-scroll relative flex grow flex-col gap-y-5 overflow-y-auto bg-white px-4 pb-4 dark:bg-gray-900 dark:ring dark:ring-white/10 dark:before:pointer-events-none dark:before:absolute dark:before:inset-0 dark:before:bg-black/10">
           <div class="relative flex h-16 shrink-0 items-center">
             @if ($adminiumLogo = adminium_logo())
                 <img src="{{ $adminiumLogo }}" alt="Your Company" class="h-8 w-auto dark:hidden" />
@@ -296,9 +296,9 @@
 </el-dialog>
 
 <!-- Static sidebar for desktop -->
-<div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col dark:bg-gray-900">
+<div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-56 lg:flex-col dark:bg-gray-900">
   <!-- Sidebar component, swap this element with another sidebar if you like -->
-  <div class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4 dark:border-white/10 dark:bg-black/10">
+  <div class="admin-sidebar-scroll flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-4 pb-4 dark:border-white/10 dark:bg-black/10">
     <div class="flex h-16 shrink-0 items-center">
       @if ($adminiumLogo = adminium_logo())
         <img src="{{ $adminiumLogo }}" alt="Your Company" class="h-8 w-auto dark:hidden" />
@@ -531,7 +531,7 @@
   </div>
 </div>
 
-<div class="lg:pl-72">
+<div class="lg:pl-56">
   <div class="sticky top-0 z-40 lg:mx-auto lg:max-w-7xl lg:px-8">
     <div class="flex h-16 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-xs sm:gap-x-6 sm:px-6 lg:px-0 lg:shadow-none dark:border-white/10 dark:bg-gray-900 dark:shadow-none">
       <button type="button" command="show-modal" commandfor="sidebar" class="-m-2.5 p-2.5 text-gray-700 hover:text-gray-900 lg:hidden dark:text-gray-400 dark:hover:text-white">

@@ -59,6 +59,28 @@
                       </td>
                       <td class="py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-6">
                         <a href="{{ route('admin.products.edit', $product) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">Edit<span class="sr-only">, </span></a>
+                        <span>/</span>
+                        <div x-data="{}" class="inline-block">
+                          <form x-ref="deleteForm" :action="`{{ route('admin.products.destroy', $product) }}`" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="button"
+                              @click="Swal.fire({
+                                title: 'Are you sure?',
+                                text: 'You won\'t be able to revert this!',
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonColor: '#3085d6',
+                                cancelButtonColor: '#d33',
+                                confirmButtonText: 'Yes, delete it!'
+                              }).then((result) => {
+                                if (result.isConfirmed) {
+                                  $refs.deleteForm.submit();
+                                }
+                              })"
+                              class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">Delete<span class="sr-only">, </span></button>
+                          </form>
+                        </div>
                       </td>
                     </tr>                 
                 @endforeach               
@@ -75,7 +97,7 @@
 
 @endsection
 
-@section('custom_script')
+@push('admin_script')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const sortableTableBody = document.getElementById('sortable');
@@ -126,4 +148,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
-@endsection
+@endpush
