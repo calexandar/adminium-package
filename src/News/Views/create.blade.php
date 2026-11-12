@@ -190,7 +190,7 @@
               <div>
                 <label for="meta_title_{{ $locale }}" class="{{ $labelClass }} admin-required">Meta title</label>
                 <div class="mt-2">
-                  <input id="meta_title_{{ $locale }}" type="text" name="meta_title[{{ $locale }}]" data-char-counter="255" value="{{ old('meta_title.' . $locale, '') }}" autocomplete="given-title" class="{{ $inputClass }}" />
+                  <input id="meta_title_{{ $locale }}" type="text" name="meta_title[{{ $locale }}]" data-char-counter="60" maxlength="60" value="{{ old('meta_title.' . $locale, '') }}" autocomplete="given-title" class="{{ $inputClass }}" />
                 </div>
                 @if ($errors->has('meta_title.*'))
                   <p class="{{ $errorClass }}">{{ $errors->first('meta_title.*') }}</p>
@@ -200,7 +200,7 @@
               <div>
                 <label for="meta_description_{{ $locale }}" class="{{ $labelClass }} admin-required">Meta description</label>
                 <div class="mt-2">
-                  <textarea id="meta_description_{{ $locale }}" name="meta_description[{{ $locale }}]" data-char-counter="255" rows="3" class="{{ $inputClass }}">{{ old('meta_description.' . $locale, '') }}</textarea>
+                  <textarea id="meta_description_{{ $locale }}" name="meta_description[{{ $locale }}]" data-char-counter="160" maxlength="160" rows="3" class="{{ $inputClass }}">{{ old('meta_description.' . $locale, '') }}</textarea>
                 </div>
                 @if ($errors->has('meta_description.*'))
                   <p class="{{ $errorClass }}">{{ $errors->first('meta_description.*') }}</p>

@@ -31,8 +31,8 @@ final class CreateMediaRequest extends FormRequest
             'description.*' => ['required', 'string', 'max:255'],
             'caption.*' => ['required',  'string', 'max:255'],
             'media_file' => ['required', 'file', 'mimes:jpeg,png,jpg,gif,mp4,mov,avi', 'max:20480'],
-            'meta_title.*' => ['required', 'string', 'max:255'],
-            'meta_description.*' => ['required', 'string', 'max:255'],
+            'meta_title.*' => ['required', 'string', 'max:60'],
+            'meta_description.*' => ['required', 'string', 'max:160'],
             'published' => ['boolean'],
         ];
     }

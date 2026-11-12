@@ -32,8 +32,8 @@ final class CreateCategoryRequest extends FormRequest
             'caption.*' => ['required',  'string', 'max:255'],
             'icon' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:1024'],
             'cover_image' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:1024'],
-            'meta_title.*' => ['required', 'string', 'max:255'],
-            'meta_description.*' => ['required', 'string', 'max:255'],
+            'meta_title.*' => ['required', 'string', 'max:60'],
+            'meta_description.*' => ['required', 'string', 'max:160'],
 
             'published' => ['boolean'],
         ];

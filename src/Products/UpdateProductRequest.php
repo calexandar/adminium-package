@@ -35,8 +35,8 @@ final class UpdateProductRequest extends FormRequest
             'disclaimer.*' => ['required', 'string', 'max:255'],
             'icon' => ['image', 'mimes:jpeg,png,jpg,gif,svg', 'max:1024'],
             'cover_image' => ['image', 'mimes:jpeg,png,jpg,gif,svg', 'max:1024'],
-            'meta_title.*' => ['required', 'string', 'max:255'],
-            'meta_description.*' => ['required', 'string', 'max:255'],
+            'meta_title.*' => ['required', 'string', 'max:60'],
+            'meta_description.*' => ['required', 'string', 'max:160'],
 
             'new_product' => ['required', 'boolean'],
             'published' => ['required', 'boolean'],

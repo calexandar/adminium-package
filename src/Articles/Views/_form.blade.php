@@ -236,7 +236,7 @@
               <div>
                 <label for="meta_title_{{ $locale }}" class="{{ $labelClass }} admin-required">Meta title</label>
                 <div class="mt-2">
-                  <input id="meta_title_{{ $locale }}" type="text" name="meta_title[{{ $locale }}]" data-char-counter="60" value="{{ $metaTitleValue }}" autocomplete="given-title" class="{{ $inputClass }}" />
+                  <input id="meta_title_{{ $locale }}" type="text" name="meta_title[{{ $locale }}]" data-char-counter="60" maxlength="60" value="{{ $metaTitleValue }}" autocomplete="given-title" class="{{ $inputClass }}" />
                 </div>
                 @error('meta_title.' . $locale)
                   <p class="{{ $errorClass }}">{{ $message }}</p>
@@ -246,7 +246,7 @@
               <div>
                 <label for="meta_description_{{ $locale }}" class="{{ $labelClass }} admin-required">Meta description</label>
                 <div class="mt-2">
-                  <textarea id="meta_description_{{ $locale }}" name="meta_description[{{ $locale }}]" data-char-counter="160" rows="3" class="{{ $inputClass }}">{{ $metaDescriptionValue }}</textarea>
+                  <textarea id="meta_description_{{ $locale }}" name="meta_description[{{ $locale }}]" data-char-counter="160" maxlength="160" rows="3" class="{{ $inputClass }}">{{ $metaDescriptionValue }}</textarea>
                 </div>
                 @error('meta_description.' . $locale)
                   <p class="{{ $errorClass }}">{{ $message }}</p>
