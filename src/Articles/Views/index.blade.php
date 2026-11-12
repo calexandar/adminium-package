@@ -46,12 +46,16 @@
                 </tr>
               </thead>
               <tbody id="sortable" class="divide-y divide-gray-200 bg-white dark:divide-white/10 dark:bg-gray-800/50">
-                @foreach ($articles as $article )
+                @foreach ($articles as $article)
                     <tr class="article" data-id="{{ $article->id }}">
-                      <td class="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6 dark:text-white"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" /></svg></td>
+                      <td class="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6 dark:text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM18.75 12a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+                        </svg>
+                      </td>
                       <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">{{ $article->title }}</td>
-                      <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">{{ $article->group->title }}</td>
-                      <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">{{ $article->author->name }}</td>
+                      <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">{{ $article->group?->title }}</td>
+                      <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">{{ $article->author?->name }}</td>
                       <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">
                         @if ($article->published)
                           <span class="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-green-600/20 ring-inset dark:bg-green-900/30 dark:text-green-400 dark:ring-green-500/50">Published</span>
@@ -84,8 +88,8 @@
                           </form>
                         </div>
                       </td>
-                    </tr>                 
-                @endforeach               
+                    </tr>
+                @endforeach
               </tbody>
             </table>
             {{ $articles->links() }}
@@ -95,8 +99,6 @@
     </div>
   @endif
 </div>
-
-
 @endsection
 
 @push('admin_script')
@@ -104,50 +106,43 @@
 document.addEventListener('DOMContentLoaded', function() {
     const sortableTableBody = document.getElementById('sortable');
 
+    if (!sortableTableBody) {
+        return;
+    }
+
     new Sortable(sortableTableBody, {
-        animation: 150, // Animation speed in milliseconds
-        ghostClass: '.article', // Class for the ghost element
-        onEnd: function (evt) {
-            // This function is called when a drag-and-drop operation ends
+        animation: 150,
+        ghostClass: 'opacity-50',
+        onEnd: function () {
             const newOrder = [];
             sortableTableBody.querySelectorAll('tr').forEach((row, index) => {
                 newOrder.push({
                     id: row.dataset.id,
-                    order: index + 1 // Assign new order based on current position
+                    order: index + 1
                 });
             });
 
-            // Send the new order to your backend
-            saveOrderToServer(newOrder);
+            fetch('{{ route('admin.articles.reorder') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ order: newOrder })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Order saved successfully:', data);
+                } else {
+                    console.error('Error saving order:', data);
+                }
+            })
+            .catch(error => {
+                console.error('Network error or server error:', error);
+            });
         }
     });
-
-    function saveOrderToServer(orderData) {
-        // Example using Fetch API for an AJAX request
-        fetch('{{ route('admin.articles.reorder') }}', { // Replace with your actual route
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}' // If using Laravel/similar frameworks
-            },
-            body: JSON.stringify({ order: orderData })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                console.log('Order saved successfully:', data);
-                // Optionally update the displayed order numbers in the table
-                sortableTableBody.querySelectorAll('tr').forEach((row, index) => {
-                    row.querySelector('td:first-child').textContent = index + 1;
-                });
-            } else {
-                console.error('Error saving order:', data);
-            }
-        })
-        .catch(error => {
-            console.error('Network error or server error:', error);
-        });
-    }
 });
 </script>
 @endpush

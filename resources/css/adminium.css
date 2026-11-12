@@ -3,8 +3,234 @@
 @source '../../src/**/*.blade.php';
 @source '../../src/**/*.php';
 @source '../../src/**/*.js';
+@source '../js/**/*.js';
 
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+[x-cloak] {
+    display: none !important;
+}
+
+.admin-required::after {
+    content: ' *';
+    color: #dc2626;
+}
+
+@media (prefers-color-scheme: dark) {
+    .admin-required::after {
+        color: #f87171;
+    }
+}
+
+/* Rich text editor (Quill) */
+.rich-editor-wrapper {
+    position: relative;
+}
+
+.rich-editor-wrapper .ql-toolbar.ql-snow {
+    border-top-left-radius: 0.375rem;
+    border-top-right-radius: 0.375rem;
+    border-color: #d1d5db;
+}
+
+.rich-editor-wrapper .ql-container.ql-snow {
+    border-bottom-left-radius: 0.375rem;
+    border-bottom-right-radius: 0.375rem;
+    border-color: #d1d5db;
+    font-family: inherit;
+    font-size: 0.875rem;
+}
+
+.rich-editor-wrapper .ql-editor {
+    min-height: 12rem;
+}
+
+.rich-editor-modes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.25rem;
+    padding-bottom: 0.375rem;
+}
+
+.rich-editor-mode {
+    border: 1px solid transparent;
+    border-radius: 0.375rem;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+    font-size: 0.75rem;
+    line-height: 1.25rem;
+    padding: 0.125rem 0.5rem;
+}
+
+.rich-editor-mode.is-active {
+    background: #eef2ff;
+    border-color: #c7d2fe;
+    color: #4338ca;
+}
+
+.rich-editor-source {
+    display: none;
+    width: 100%;
+    min-height: 12rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    background: #fff;
+    color: #111827;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    padding: 0.75rem;
+    resize: vertical;
+}
+
+.rich-editor-hint {
+    display: none;
+    margin-top: 0.375rem;
+    color: #6b7280;
+    font-size: 0.75rem;
+    line-height: 1rem;
+}
+
+.rich-editor-counter {
+    margin-top: 0.25rem;
+    color: #6b7280;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    text-align: right;
+}
+
+.rich-editor-counter.is-over {
+    color: #dc2626;
+}
+
+.rich-editor-wrapper.is-source .ql-toolbar.ql-snow,
+.rich-editor-wrapper.is-source .rich-editor {
+    display: none;
+}
+
+.rich-editor-wrapper.is-source .rich-editor-source,
+.rich-editor-wrapper.is-source .rich-editor-hint {
+    display: block;
+}
+
+@media (prefers-color-scheme: dark) {
+    .rich-editor-wrapper .ql-toolbar.ql-snow,
+    .rich-editor-wrapper .ql-container.ql-snow {
+        border-color: rgba(255, 255, 255, 0.1);
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .rich-editor-wrapper .ql-editor {
+        color: #fff;
+    }
+
+    .rich-editor-wrapper .ql-editor.ql-blank::before {
+        color: #9ca3af;
+    }
+
+    .rich-editor-mode {
+        color: #9ca3af;
+    }
+
+    .rich-editor-mode.is-active {
+        background: rgba(99, 102, 241, 0.2);
+        border-color: rgba(99, 102, 241, 0.4);
+        color: #c7d2fe;
+    }
+
+    .rich-editor-source {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.1);
+        color: #fff;
+    }
+
+    .rich-editor-hint {
+        color: #9ca3af;
+    }
+
+    .rich-editor-counter {
+        color: #9ca3af;
+    }
+
+    .rich-editor-counter.is-over {
+        color: #f87171;
+    }
+
+    .rich-editor-wrapper .ql-snow .ql-stroke {
+        stroke: #fff;
+    }
+
+    .rich-editor-wrapper .ql-snow .ql-fill {
+        fill: #fff;
+    }
+
+    .rich-editor-wrapper .ql-snow .ql-picker {
+        color: #fff;
+    }
+
+    .rich-editor-wrapper .ql-snow .ql-picker-options {
+        background-color: #1f2937;
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .rich-editor-wrapper .ql-snow .ql-tooltip {
+        background-color: #111827;
+        border-color: rgba(255, 255, 255, 0.1);
+        color: #e5e7eb;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    }
+
+    .rich-editor-wrapper .ql-snow .ql-tooltip input[type='text'] {
+        background-color: transparent;
+        border-color: rgba(255, 255, 255, 0.1);
+        color: #fff;
+    }
+
+    .rich-editor-wrapper .ql-snow .ql-tooltip a.ql-action::after,
+    .rich-editor-wrapper .ql-snow .ql-tooltip a.ql-remove::before {
+        color: #93c5fd;
+    }
+
+    .rich-editor-wrapper .ql-snow .ql-toolbar button:hover .ql-stroke,
+    .rich-editor-wrapper .ql-snow .ql-toolbar button:focus .ql-stroke,
+    .rich-editor-wrapper .ql-snow .ql-toolbar button.ql-active .ql-stroke,
+    .rich-editor-wrapper .ql-snow.ql-toolbar button:hover .ql-stroke,
+    .rich-editor-wrapper .ql-snow.ql-toolbar button:focus .ql-stroke,
+    .rich-editor-wrapper .ql-snow.ql-toolbar button.ql-active .ql-stroke {
+        stroke: #fff;
+    }
+
+    .rich-editor-wrapper .ql-snow .ql-toolbar button:hover .ql-fill,
+    .rich-editor-wrapper .ql-snow .ql-toolbar button:focus .ql-fill,
+    .rich-editor-wrapper .ql-snow .ql-toolbar button.ql-active .ql-fill,
+    .rich-editor-wrapper .ql-snow .ql-toolbar button:hover .ql-fill,
+    .rich-editor-wrapper .ql-snow .ql-toolbar button:focus .ql-fill,
+    .rich-editor-wrapper .ql-snow .ql-toolbar button.ql-active .ql-fill {
+        fill: #fff;
+    }
+
+    .rich-editor-wrapper .ql-snow .ql-toolbar .ql-picker-label:hover,
+    .rich-editor-wrapper .ql-snow .ql-toolbar .ql-picker-label.ql-active,
+    .rich-editor-wrapper .ql-snow .ql-toolbar .ql-picker-item:hover,
+    .rich-editor-wrapper .ql-snow .ql-toolbar .ql-picker-item.ql-selected {
+        color: #fff;
+    }
+
+    .rich-editor-wrapper .ql-snow .ql-toolbar .ql-picker-label:hover .ql-stroke,
+    .rich-editor-wrapper .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-stroke,
+    .rich-editor-wrapper .ql-snow .ql-toolbar .ql-picker-item:hover .ql-stroke,
+    .rich-editor-wrapper .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-stroke {
+        stroke: #fff;
+    }
+
+    .rich-editor-wrapper .ql-snow .ql-toolbar .ql-picker-label:hover .ql-fill,
+    .rich-editor-wrapper .ql-snow .ql-toolbar .ql-picker-label.ql-active .ql-fill,
+    .rich-editor-wrapper .ql-snow .ql-toolbar .ql-picker-item:hover .ql-fill,
+    .rich-editor-wrapper .ql-snow .ql-toolbar .ql-picker-item.ql-selected .ql-fill {
+        fill: #fff;
+    }
 }

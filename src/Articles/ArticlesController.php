@@ -41,6 +41,7 @@ final readonly class ArticlesController
             'short_description' => $request->array('short_description'),
             'meta_title' => $request->array('meta_title'),
             'meta_description' => $request->array('meta_description'),
+            'published' => $request->boolean('published'),
         ]);
 
         $article->addMediaFromRequest('cover_image')->toMediaCollection('articles');

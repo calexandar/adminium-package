@@ -13,8 +13,17 @@
         <!-- Flags -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.3.2/css/flag-icons.min.css"/>
 
-        <!-- CKEditor -->
-        <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
+        <!-- Rich text editor (Quill) -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" />
+        <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+        <script>
+            window.CKEDITOR = {
+                queue: [],
+                replace(target) {
+                    this.queue.push(target);
+                },
+            };
+        </script>
 
         <!-- Sortable -->
         <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
