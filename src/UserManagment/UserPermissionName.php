@@ -24,6 +24,29 @@ enum UserPermissionName: string
     case MANAGE_LOYALTY = 'manage_loyalty';
     case MANAGE_MOBILEAPP = 'manage_mobileapp';
 
+    public function module(): string
+    {
+        return match ($this) {
+            self::MANAGE_SETTINGS => 'settings',
+            self::MANAGE_CATEGORIES => 'categories',
+            self::MANAGE_GROUPS => 'groups',
+            self::MANAGE_PRODUCTS => 'products',
+            self::MANAGE_ARTICLES => 'articles',
+            self::MANAGE_NEWS => 'news',
+            self::MANAGE_MEDIA => 'media',
+            self::MANAGE_PAGES => 'pages',
+            self::MANAGE_USERS => 'users',
+            self::MANAGE_SLIDER,
+            self::MANAGE_FOOTER_LINKS,
+            self::MANAGE_EDITABLES,
+            self::MANAGE_BANNERS,
+            self::MANAGE_ACCORDIONS,
+            self::MANAGE_MOTOS,
+            self::MANAGE_LOYALTY,
+            self::MANAGE_MOBILEAPP => 'legacy',
+        };
+    }
+
     public function label(): string
     {
         return match ($this) {

@@ -13,8 +13,11 @@ use Calexandar\Adminium\Dashboard\DashboardServiceProvider;
 use Calexandar\Adminium\Groups\GroupsServiceProvider;
 use Calexandar\Adminium\Http\Middleware\Authenticate;
 use Calexandar\Adminium\Media\MediaServiceProvider;
+use Calexandar\Adminium\Navigation\NavigationRegistry;
 use Calexandar\Adminium\News\NewsServiceProvider;
 use Calexandar\Adminium\Pages\PagesServiceProvider;
+use Calexandar\Adminium\Permissions\PermissionDefinition;
+use Calexandar\Adminium\Permissions\PermissionRegistry;
 use Calexandar\Adminium\Products\ProductsServiceProvider;
 use Calexandar\Adminium\Settings\SettingsServiceProvider;
 use Calexandar\Adminium\UserManagment\UserPermissionName;
@@ -47,7 +50,13 @@ final class AdminiumServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__.'/../config/adminium.php', 'adminium');
 
+        $this->app->singleton(NavigationRegistry::class);
+        $this->app->singleton(PermissionRegistry::class);
+        $this->app->singleton(AdminiumManager::class);
+        $this->app->alias(AdminiumManager::class, 'adminium');
+
         $this->configureAuth();
+        $this->registerDefaultPermissions();
 
         foreach (self::MODULES as $module => $provider) {
             if ((bool) config('adminium.modules.'.$module, true)) {
@@ -58,7 +67,10 @@ final class AdminiumServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->registerSuperAdminGate();
+        $this->app->booted(function (): void {
+            $this->registerSuperAdminGate();
+            $this->registerPermissionGates();
+        });
 
         $this->app->make(Router::class)->aliasMiddleware('adminium.auth', Authenticate::class);
 
@@ -104,27 +116,47 @@ final class AdminiumServiceProvider extends ServiceProvider
         }
     }
 
+    private function registerDefaultPermissions(): void
+    {
+        $permissions = $this->app->make(PermissionRegistry::class);
+
+        foreach (UserPermissionName::cases() as $permission) {
+            $permissions->register(new PermissionDefinition(
+                $permission->value,
+                $permission->label(),
+                $permission->module(),
+            ));
+        }
+    }
+
     private function registerSuperAdminGate(): void
     {
         $role = config('adminium.super_admin_role');
 
-        if (is_string($role) && $role !== '') {
-            Gate::before(function (object $user) use ($role): ?bool {
-                if (! method_exists($user, 'hasRole')) {
-                    return null;
-                }
-
-                return $user->hasRole($role, adminium_permission_guard()) ? true : null;
-            });
+        if (! is_string($role) || $role === '') {
+            return;
         }
 
-        foreach (UserPermissionName::cases() as $permission) {
-            Gate::define($permission->value, static function (object $user) use ($permission): bool {
+        Gate::before(function (object $user) use ($role): ?bool {
+            if (! method_exists($user, 'hasRole')) {
+                return null;
+            }
+
+            return $user->hasRole($role, adminium_permission_guard()) ? true : null;
+        });
+    }
+
+    private function registerPermissionGates(): void
+    {
+        $permissions = $this->app->make(PermissionRegistry::class);
+
+        foreach ($permissions->all() as $permission) {
+            Gate::define($permission->name, static function (object $user) use ($permission): bool {
                 if (! method_exists($user, 'checkPermissionTo')) {
                     return false;
                 }
 
-                return $user->checkPermissionTo($permission->value, adminium_permission_guard());
+                return $user->checkPermissionTo($permission->name, adminium_permission_guard());
             });
         }
     }

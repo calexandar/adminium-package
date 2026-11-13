@@ -8,6 +8,7 @@
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
             <directory>tests/CustomModel</directory>
+            <directory>tests/Modules</directory>
         </testsuite>
     </testsuites>
     <source>

@@ -95,11 +95,11 @@
           <legend class="text-sm/6 font-semibold text-gray-900 dark:text-white">Admin permissions.</legend>
           <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">These are permissions that are only available to you.</p>
           <div class="mt-6 grid grid-cols-1  md:grid-cols-2 gap-4">
-            @foreach (\Calexandar\Adminium\UserManagment\UserPermissionName::cases() as $permission)
+            @foreach (app(\Calexandar\Adminium\Permissions\PermissionRegistry::class)->all() as $permission)
               
               <div class="flex items-center gap-x-3">               
-                <input id="{{ $permission }}" type="checkbox" name="permissions[]" @if(in_array($permission->value, $user->getAllPermissions()->pluck('name')->toArray())) checked @endif value="{{ $permission }}" class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 dark:border-white/10 dark:bg-white/5 dark:checked:border-indigo-500 dark:checked:bg-indigo-500 dark:focus-visible:outline-indigo-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden" />
-                <label for="{{ $permission }}" class="block text-sm/6 font-medium text-gray-900 dark:text-white">{{ $permission->label() }}</label>
+                <input id="{{ $permission->name }}" type="checkbox" name="permissions[]" @if(in_array($permission->name, $user->getAllPermissions()->pluck('name')->toArray())) checked @endif value="{{ $permission->name }}" class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 dark:border-white/10 dark:bg-white/5 dark:checked:border-indigo-500 dark:checked:bg-indigo-500 dark:focus-visible:outline-indigo-500 dark:disabled:border-white/5 dark:disabled:bg-white/10 dark:disabled:before:bg-white/20 forced-colors:appearance-auto forced-colors:before:hidden" />
+                <label for="{{ $permission->name }}" class="block text-sm/6 font-medium text-gray-900 dark:text-white">{{ $permission->label }}</label>
               </div>
               
             @endforeach

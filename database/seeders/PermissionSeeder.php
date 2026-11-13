@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Calexandar\Adminium\Database\Seeders;
 
-use Calexandar\Adminium\UserManagment\UserPermissionName;
+use Calexandar\Adminium\Permissions\PermissionRegistry;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 
@@ -15,8 +15,10 @@ final class PermissionSeeder extends Seeder
      */
     public function run(): void
     {
-        foreach (UserPermissionName::cases() as $permission) {
-            Permission::findOrCreate($permission->value, adminium_permission_guard());
+        $permissions = app(PermissionRegistry::class);
+
+        foreach ($permissions->all() as $permission) {
+            Permission::findOrCreate($permission->name, adminium_permission_guard());
         }
     }
 }

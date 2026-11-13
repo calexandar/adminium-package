@@ -172,6 +172,107 @@ Create an account with `php artisan adminium:admin:create`, then sign in at
 `/admin/sign-in`. The route prefix can be changed with `ADMINIUM_ROUTE_PREFIX`
 or the `route_prefix` config value.
 
+## Extending Adminium
+
+### How modules work
+
+Adminium's first-party modules are listed in `AdminiumServiceProvider::MODULES`,
+which maps a stable module id to a service provider. The `modules` array in
+`config/adminium.php` controls which of those providers are registered. A
+module provider owns its views, routes, navigation metadata, and any module
+specific setup. Routes are registered under the `admin.` name prefix and the
+configured route prefix.
+
+A disabled first-party module is never registered, so its routes, views, and
+navigation do not exist. Its permission names are still registered centrally so
+existing roles and permission selections remain valid.
+
+Adminium does not require a second module contract. Application modules are
+ordinary Laravel service providers that use the `Adminium` facade during
+`boot()` to contribute navigation and permissions. Register your provider in the
+host application (for example in `bootstrap/providers.php`).
+
+```php
+use Calexandar\Adminium\Facades\Adminium;
+use Calexandar\Adminium\Navigation\NavigationGroup;
+use Calexandar\Adminium\Navigation\NavigationItem;
+use Calexandar\Adminium\Permissions\PermissionDefinition;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\ServiceProvider;
+
+final class ReportsServiceProvider extends ServiceProvider
+{
+    public function boot(): void
+    {
+        Adminium::permissions()->register(new PermissionDefinition(
+            'view_reports',
+            'View reports',
+            'reports',
+        ));
+
+        Adminium::navigation()->group(NavigationGroup::make('reports', 'Reports', 50));
+        Adminium::navigation()->add(NavigationItem::make(
+            id: 'reports',
+            label: 'Reports',
+            route: 'admin.reports.index',
+            permission: 'view_reports',
+            icon: 'pages',
+            group: 'reports',
+            order: 10,
+            active: ['admin.reports.*'],
+        ));
+
+        Route::middleware(['web', 'adminium.auth', 'can:view_reports'])
+            ->prefix(config('adminium.route_prefix', 'admin'))
+            ->name('admin.')
+            ->group(__DIR__.'/routes.php');
+    }
+}
+```
+
+### Navigation
+
+- `id` is a stable identifier used by `has()`, `get()`, and `remove()`.
+- `route` is a Laravel route name. The `parameters` argument accepts named
+  route parameters when calling `NavigationItem::make()`.
+- `permission` is optional. Items whose permission is denied are not rendered.
+  Route middleware remains the authoritative authorization check.
+- `group` defaults to `main`. Register a `NavigationGroup` to control the group
+  label and position; unknown groups are created from the group id.
+- `order` sorts items and groups. Ties are resolved by id.
+- `active` is a list of route patterns passed to `Request::routeIs()`. It
+  defaults to the item's route.
+- Supported icon names are `dashboard`, `users`, `categories`, `products`,
+  `groups`, `articles`, `news`, `media`, and `pages`. Any other name renders a
+  generic fallback icon.
+
+`Adminium::navigation()->grouped()` returns the sorted groups and their items,
+which is what the packaged sidebar renders. `remove($id)` can be used to hide a
+first-party item.
+
+### Permissions and authorization
+
+`PermissionDefinition` has a stable `name`, a human-readable `label` shown in
+the user management screens, and the owning `module`. Register permissions in
+the same provider that owns the feature:
+
+```php
+Adminium::permissions()->register(new PermissionDefinition(
+    'export_reports',
+    'Export reports',
+    'reports',
+));
+```
+
+The permission seeder, user create/edit screens, and gates all read from the
+registry. Gates are registered after all providers have booted, so permissions
+added by custom modules are available to `can:` middleware. Duplicate names are
+stored once.
+
+Disabling a first-party module removes its routes and navigation items, but its
+permission definitions remain registered. This keeps existing roles and
+permission names valid while the module is disabled.
+
 ## Local development
 
 When developing the package from a monorepo, add a path repository instead:
