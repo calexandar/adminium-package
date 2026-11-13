@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Calexandar\Adminium\Articles;
 
 use Calexandar\Adminium\Groups\Group;
-use Calexandar\Adminium\UserManagment\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Kra8\Snowflake\HasShortflakePrimary;
@@ -63,6 +62,6 @@ final class Article extends Model implements HasMedia
     // @phpstan-ignore-next-line
     public function author(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(adminium_user_model());
     }
 }

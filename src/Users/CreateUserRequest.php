@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Calexandar\Adminium\Users;
 
-use Calexandar\Adminium\UserManagment\User;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules;
 
@@ -36,11 +35,11 @@ final class CreateUserRequest extends FormRequest
                 'lowercase',
                 'email',
                 'max:255',
-                'unique:'.User::class,
+                'unique:'.adminium_user_model(),
             ],
             'password' => ['required', 'confirmed',  Rules\Password::defaults()],
             'permissions' => ['required', 'array'],
-            'avatar' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:1024'],
+            'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:1024'],
         ];
     }
 }

@@ -33,7 +33,7 @@
                         <td class="py-4 pr-3 pl-4 text-sm font-medium whitespace-nowrap text-gray-900 sm:pl-6 dark:text-white">{{ $user->name }}</td>
                         <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">{{ $user->title }}</td>
                         <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">{{ $user->email }}</td>
-                        <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">@if ($user->hasRole('super_admin')) Super Admin @else Admin @endif</td>
+                        <td class="px-3 py-4 text-sm whitespace-nowrap text-gray-500 dark:text-gray-400">@if ($user->hasRole('super_admin', adminium_permission_guard())) Super Admin @else Admin @endif</td>
                         <td class="py-4 pr-4 pl-3 text-right text-sm font-medium whitespace-nowrap sm:pr-6">
                         <a href="{{ route('admin.users.edit', $user) }}" class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300">Edit<span class="sr-only">, {{ $user->name }}</span></a>
                         </td>

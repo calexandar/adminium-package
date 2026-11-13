@@ -8,6 +8,7 @@ use Calexandar\Adminium\Authentication\SignIn\SignInAdminViewController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/sign-in', SignInAdminController::class)
+    ->middleware('throttle:5,1')
     ->name('admin.sign-in');
 Route::get('/sign-in', SignInAdminViewController::class)
     ->name('admin.sign-in.view');

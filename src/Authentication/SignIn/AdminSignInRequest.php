@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Calexandar\Adminium\Authentication\SignIn;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules;
+use Illuminate\Support\Str;
 
 final class AdminSignInRequest extends FormRequest
 {
@@ -24,9 +24,7 @@ final class AdminSignInRequest extends FormRequest
      */
     public function rules(): array
     {
-
         return [
-
             'email' => [
                 'required',
                 'string',
@@ -34,7 +32,16 @@ final class AdminSignInRequest extends FormRequest
                 'email',
                 'max:255',
             ],
-            'password' => ['required', Rules\Password::defaults()],
+            'password' => ['required', 'string'],
         ];
+    }
+
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('email')) {
+            $this->merge([
+                'email' => Str::lower(mb_trim((string) $this->input('email'))),
+            ]);
+        }
     }
 }

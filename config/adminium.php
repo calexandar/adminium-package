@@ -30,11 +30,38 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Authentication Guard and Provider
+    |--------------------------------------------------------------------------
+    |
+    | Adminium registers its own session guard and Eloquent provider so it does
+    | not replace the host application's existing auth configuration. If the
+    | named guard already exists, Adminium leaves it untouched.
+    |
+    */
+
+    'guard' => 'adminium',
+    'auth_provider' => 'adminium_users',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Permission Guard
+    |--------------------------------------------------------------------------
+    |
+    | The guard assigned to roles and permissions seeded by Adminium. This is
+    | kept separate from the authentication guard for host compatibility.
+    |
+    */
+
+    'permission_guard' => 'web',
+
+    /*
+    |--------------------------------------------------------------------------
     | Authenticatable Model
     |--------------------------------------------------------------------------
     |
     | The Eloquent model used for admin authentication. Override this to use
-    | your application's own user model.
+    | your application's own model. It must be authenticatable and use the
+    | Spatie HasRoles trait. The Media Library trait is optional.
     |
     */
 

@@ -16,7 +16,7 @@ final class RoleSeeder extends Seeder
     public function run(): void
     {
         foreach (UserRoleName::cases() as $role) {
-            Role::create(['name' => $role->value, 'guard_name' => 'web']);
+            Role::findOrCreate($role->value, adminium_permission_guard());
         }
     }
 }

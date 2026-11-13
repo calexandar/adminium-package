@@ -6,8 +6,6 @@ namespace Calexandar\Adminium\Authentication;
 
 use Calexandar\Adminium\Authentication\SignIn\SignInAdminCommand;
 use Calexandar\Adminium\Authentication\SignIn\SignInAdminCommandHandler;
-use Illuminate\Auth\SessionGuard;
-use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\ServiceProvider;
 
@@ -19,14 +17,6 @@ final class AdminAuthenticationServiceProvider extends ServiceProvider
         $this->registerCommandHandlers();
         $this->loadViewsFrom(__DIR__.'/Views', 'authentication');
         $this->app->register(RouteServiceProvider::class);
-    }
-
-    public function register(): void
-    {
-        $this->app->bind(StatefulGuard::class, function ($app) {
-            return $app->make(SessionGuard::class, ['name' => 'web', 'provider' => $app['auth']->createUserProvider('users'), 'request' => $app->request]);
-        });
-
     }
 
     protected function registerCommandHandlers(): void

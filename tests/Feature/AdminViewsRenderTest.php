@@ -22,13 +22,13 @@ function adminUser(): User
 }
 
 test('all module create views render', function (string $module) {
-    actingAs(adminUser())
+    actingAs(adminUser(), adminium_guard())
         ->get(route("admin.{$module}.create"))
         ->assertSuccessful();
 })->with(['categories', 'groups', 'media', 'news', 'pages', 'products']);
 
 test('all module index views render', function (string $module) {
-    actingAs(adminUser())
+    actingAs(adminUser(), adminium_guard())
         ->get(route("admin.{$module}.index"))
         ->assertSuccessful();
 })->with(['categories', 'groups', 'media', 'news', 'pages', 'products']);
@@ -73,7 +73,7 @@ test('all module edit views render', function (string $module) {
         'category_id' => $category->id,
     ]);
 
-    actingAs(adminUser())
+    actingAs(adminUser(), adminium_guard())
         ->get(route("admin.{$module}.edit", $model))
         ->assertSuccessful();
 })->with(['categories', 'groups', 'media', 'news', 'pages', 'products']);

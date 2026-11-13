@@ -14,7 +14,7 @@ use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Spatie\Permission\Traits\HasRoles;
 
-final class User extends Authenticatable implements HasMedia
+class User extends Authenticatable implements HasMedia
 {
     /** @use HasFactory<\Calexandar\Adminium\Database\Factories\UserFactory> */
     use HasFactory, HasRoles, HasShortflakePrimary, InteractsWithMedia, Notifiable;
@@ -40,6 +40,11 @@ final class User extends Authenticatable implements HasMedia
         'password',
         'remember_token',
     ];
+
+    public function guardName(): string
+    {
+        return adminium_permission_guard();
+    }
 
     protected static function newFactory(): UserFactory
     {

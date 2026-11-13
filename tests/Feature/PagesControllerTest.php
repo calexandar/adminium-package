@@ -32,7 +32,7 @@ test('can view pages index', function () {
         'order' => 1,
     ]);
 
-    actingAs($user)
+    actingAs($user, adminium_guard())
         ->get(route('admin.pages.index'))
         ->assertSuccessful()
         ->assertViewIs('pages::index')
@@ -59,7 +59,7 @@ test('can create page', function () {
         'cover_image' => UploadedFile::fake()->image('cover.jpg'),
     ];
 
-    actingAs($user)
+    actingAs($user, adminium_guard())
         ->post(route('admin.pages.store'), $data)
         ->assertRedirect(route('admin.pages.index'))
         ->assertSessionHas('success', 'Page created successfully');
@@ -101,7 +101,7 @@ test('can update page', function () {
         'privacy_policy' => false,
     ];
 
-    actingAs($user)
+    actingAs($user, adminium_guard())
         ->put(route('admin.pages.update', $page), $data)
         ->assertRedirect(route('admin.pages.index'))
         ->assertSessionHas('success', 'Page updated successfully');
@@ -130,7 +130,7 @@ test('can delete page', function () {
         'published' => true,
     ]);
 
-    actingAs($user)
+    actingAs($user, adminium_guard())
         ->delete(route('admin.pages.destroy', $page))
         ->assertRedirect(route('admin.pages.index'))
         ->assertSessionHas('success', 'Page deleted successfully');

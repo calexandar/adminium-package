@@ -12,13 +12,12 @@ final class LogOutController
 {
     public function __invoke(Request $request): RedirectResponse
     {
-
-        Auth::guard('web')->logout();
+        Auth::guard(adminium_guard())->logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect()->route('admin.sign-in.view');
     }
 }

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Calexandar\Adminium\Articles;
 
 use Calexandar\Adminium\Groups\Group;
-use Calexandar\Adminium\UserManagment\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -24,7 +23,7 @@ final readonly class ArticlesController
     public function create(): View
     {
         $groups = Group::all();
-        $users = User::all();
+        $users = adminium_user_model()::query()->get();
 
         return view('articles::create', compact('groups', 'users'));
     }
@@ -53,7 +52,7 @@ final readonly class ArticlesController
     {
         $article = Article::find($article);
         $groups = Group::all();
-        $users = User::all();
+        $users = adminium_user_model()::query()->get();
 
         return view('articles::edit', compact('article', 'groups', 'users'));
     }

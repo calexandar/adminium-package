@@ -46,27 +46,60 @@ Or do everything in one command:
 php artisan adminium:install --migrate --seed
 ```
 
-The `--seed` flag creates the `super_admin` role, every module permission, and
-the default super admin (`superadmin@gmail.com` / `password`). Change that
-password immediately.
+The `--seed` flag creates the `super_admin` and `admin` roles plus every module
+permission. It never creates a user account.
+
+Create the first administrator after installing and migrating:
+
+```bash
+php artisan adminium:admin:create
+```
+
+The command prompts for the name, email address, password, and role. For
+automation, pass the values explicitly:
+
+```bash
+php artisan adminium:admin:create \
+    --name="Site Admin" \
+    --email="admin@example.com" \
+    --password="change-me-now" \
+    --role=super_admin
+```
+
+Passwords must be at least eight characters and are never printed. The command
+fails if the email already exists or the selected role has not been seeded.
 
 `adminium:install` publishes the config and assets, publishes the Spatie
 Permission and Media Library migrations when they are missing, and creates the
-storage link.
+storage link. Re-running it does not require a new administrator account.
 
 ### Authentication
 
-Adminium configures the `users` auth provider to use
-`config('adminium.user_model')`, which defaults to
-`Calexandar\Adminium\UserManagment\User`. The model must use the Spatie
-`HasRoles` trait and the Media Library `InteractsWithMedia` trait.
+Adminium registers a dedicated `adminium` session guard and `adminium_users`
+Eloquent provider. It does not replace the host application's default `web`
+guard or `users` provider. If a guard or provider with the configured name
+already exists, Adminium leaves it untouched.
 
-To use your own model, create one that extends the package user and set it in
-`config/adminium.php`:
+The configured user model must be an Eloquent, authenticatable model that uses
+the Spatie `HasRoles` trait. The Media Library `InteractsWithMedia` trait is
+optional; without it the profile menu shows initials instead of an avatar.
+
+To use your own model, either extend the package user or configure a compatible
+model:
 
 ```php
 'user_model' => App\Models\User::class,
 ```
+
+The guard and provider names are configurable:
+
+```php
+'guard' => 'adminium',
+'auth_provider' => 'adminium_users',
+```
+
+Set `guard` to `web` to reuse an existing application guard instead. Roles and
+permissions are seeded against `permission_guard`, which defaults to `web`.
 
 ### Frontend assets
 
@@ -135,8 +168,9 @@ php artisan vendor:publish --tag=adminium-config
 
 ### Sign in
 
-The panel is available at `/admin/sign-in` by default. The route prefix can be
-changed with `ADMINIUM_ROUTE_PREFIX` or the `route_prefix` config value.
+Create an account with `php artisan adminium:admin:create`, then sign in at
+`/admin/sign-in`. The route prefix can be changed with `ADMINIUM_ROUTE_PREFIX`
+or the `route_prefix` config value.
 
 ## Local development
 

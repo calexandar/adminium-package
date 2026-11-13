@@ -7,6 +7,6 @@ namespace Calexandar\Adminium\Authentication\SignIn;
 final readonly class AdminSignedIn
 {
     public function __construct(
-        public int $userId,
+        public int|string $userId,
     ) {}
 }
