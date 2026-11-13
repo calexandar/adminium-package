@@ -16,7 +16,11 @@ final class Authenticate
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check()) {
+        $guardName = adminium_guard();
+
+        if (Auth::guard($guardName)->check()) {
+            Auth::shouldUse($guardName);
+
             return $next($request);
         }
 

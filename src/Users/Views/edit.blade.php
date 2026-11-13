@@ -44,10 +44,28 @@
         </div>
 
      
+        <div class="sm:col-span-4">
+          <label for="password" class="block text-sm/6 font-medium text-gray-900 dark:text-white">New password</label>
+          <div class="mt-2">
+            <input id="password" type="password" name="password" autocomplete="new-password" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500" />
+          </div>
+          <p class="mt-1 text-sm/6 text-gray-600 dark:text-gray-400">Leave blank to keep the current password.</p>
+          @error('password')
+            <p id="password-error" class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+          @enderror
+        </div>
+
+        <div class="sm:col-span-4">
+          <label for="password_confirmation" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Confirm new password</label>
+          <div class="mt-2">
+            <input id="password_confirmation" type="password" name="password_confirmation" autocomplete="new-password" class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6 dark:bg-white/5 dark:text-white dark:outline-white/10 dark:placeholder:text-gray-500 dark:focus:outline-indigo-500" />
+          </div>
+        </div>
+
         <div class="col-span-full">
           <label for="avatar" class="block text-sm/6 font-medium text-gray-900 dark:text-white">Avatar</label>
           <div class="mt-2 flex items-center gap-x-3">
-            @if ($user->getMedia('avatars')->count())
+            @if (method_exists($user, 'getMedia') && $user->getMedia('avatars')->count())
                 <img src="{{ $user->getFirstMediaUrl('avatars') }}" alt="" class="size-12 text-gray-300 dark:text-gray-500" />
             @else
               <svg viewBox="0 0 24 24" fill="currentColor" data-slot="avatar" aria-hidden="true" class="size-12 text-gray-300 dark:text-gray-500">

@@ -563,13 +563,18 @@
           <div aria-hidden="true" class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-200 dark:lg:bg-white/10"></div>
 
           <!-- Profile dropdown -->
+          @php($admin = auth(adminium_guard())->user())
           <el-dropdown class="relative">
             <button class="relative flex items-center">
               <span class="absolute -inset-1.5"></span>
               <span class="sr-only">Open user menu</span>
-              <img src="{{ auth()->user()->getFirstMediaUrl('avatars', 'thumb') }}" class="h-8 w-8 rounded-full bg-gray-50 dark:bg-gray-800" alt=""/>
+              @if ($admin && method_exists($admin, 'getFirstMediaUrl'))
+                <img src="{{ $admin->getFirstMediaUrl('avatars', 'thumb') }}" class="h-8 w-8 rounded-full bg-gray-50 dark:bg-gray-800" alt=""/>
+              @else
+                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 text-xs font-semibold text-white">{{ str((string) ($admin?->name ?? 'A'))->substr(0, 1)->upper() }}</span>
+              @endif
               <span class="hidden lg:flex lg:items-center">
-                <span aria-hidden="true" class="ml-4 text-sm/6 font-semibold text-gray-900 dark:text-white">{{ auth()->user()->name }}</span>
+                <span aria-hidden="true" class="ml-4 text-sm/6 font-semibold text-gray-900 dark:text-white">{{ $admin?->name }}</span>
                 <svg viewBox="0 0 20 20" fill="currentColor" data-slot="icon" aria-hidden="true" class="ml-2 size-5 text-gray-400">
                   <path d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" fill-rule="evenodd" />
                 </svg>

@@ -7,6 +7,7 @@ namespace Calexandar\Adminium;
 use Calexandar\Adminium\Articles\ArticlesServiceProvider;
 use Calexandar\Adminium\Authentication\AdminAuthenticationServiceProvider;
 use Calexandar\Adminium\Categories\CategoriesServiceProvider;
+use Calexandar\Adminium\Console\AdminCreateCommand;
 use Calexandar\Adminium\Console\InstallCommand;
 use Calexandar\Adminium\Dashboard\DashboardServiceProvider;
 use Calexandar\Adminium\Groups\GroupsServiceProvider;
@@ -16,7 +17,9 @@ use Calexandar\Adminium\News\NewsServiceProvider;
 use Calexandar\Adminium\Pages\PagesServiceProvider;
 use Calexandar\Adminium\Products\ProductsServiceProvider;
 use Calexandar\Adminium\Settings\SettingsServiceProvider;
+use Calexandar\Adminium\UserManagment\UserPermissionName;
 use Calexandar\Adminium\Users\UsersServiceProvider;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -64,6 +67,7 @@ final class AdminiumServiceProvider extends ServiceProvider
         }
 
         $this->commands([
+            AdminCreateCommand::class,
             InstallCommand::class,
         ]);
 
@@ -79,32 +83,49 @@ final class AdminiumServiceProvider extends ServiceProvider
 
     private function configureAuth(): void
     {
-        $model = config('adminium.user_model');
+        $guard = adminium_guard();
+        $provider = adminium_auth_provider();
+        $model = adminium_user_model();
 
-        if (! is_string($model) || ! class_exists($model)) {
-            return;
+        $config = $this->app->make(ConfigRepository::class);
+
+        if (! $config->has('auth.guards.'.$guard)) {
+            $config->set('auth.guards.'.$guard, [
+                'driver' => 'session',
+                'provider' => $provider,
+            ]);
         }
 
-        config([
-            'auth.providers.users.model' => $model,
-            'auth.guards.web.provider' => 'users',
-        ]);
+        if (! $config->has('auth.providers.'.$provider)) {
+            $config->set('auth.providers.'.$provider, [
+                'driver' => 'eloquent',
+                'model' => $model,
+            ]);
+        }
     }
 
     private function registerSuperAdminGate(): void
     {
         $role = config('adminium.super_admin_role');
 
-        if (! is_string($role) || $role === '') {
-            return;
+        if (is_string($role) && $role !== '') {
+            Gate::before(function (object $user) use ($role): ?bool {
+                if (! method_exists($user, 'hasRole')) {
+                    return null;
+                }
+
+                return $user->hasRole($role, adminium_permission_guard()) ? true : null;
+            });
         }
 
-        Gate::before(function (object $user) use ($role): ?bool {
-            if (! method_exists($user, 'hasRole')) {
-                return null;
-            }
+        foreach (UserPermissionName::cases() as $permission) {
+            Gate::define($permission->value, static function (object $user) use ($permission): bool {
+                if (! method_exists($user, 'checkPermissionTo')) {
+                    return false;
+                }
 
-            return $user->hasRole($role) ? true : null;
-        });
+                return $user->checkPermissionTo($permission->value, adminium_permission_guard());
+            });
+        }
     }
 }

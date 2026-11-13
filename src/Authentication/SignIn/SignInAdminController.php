@@ -16,6 +16,7 @@ final readonly class SignInAdminController
             new SignInAdminCommand(
                 $request->string('email')->value(),
                 $request->string('password')->value(),
+                $request->boolean('remember-me'),
             )
         );
 

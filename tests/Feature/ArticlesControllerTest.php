@@ -57,7 +57,7 @@ test('can view articles index', function () {
     $group = createArticleGroup();
     createArticle($group, $user);
 
-    actingAs($user)
+    actingAs($user, adminium_guard())
         ->get(route('admin.articles.index'))
         ->assertSuccessful()
         ->assertViewIs('articles::index');
@@ -66,7 +66,7 @@ test('can view articles index', function () {
 test('can view create article form', function () {
     $user = createArticleAdmin();
 
-    actingAs($user)
+    actingAs($user, adminium_guard())
         ->get(route('admin.articles.create'))
         ->assertSuccessful()
         ->assertViewIs('articles::create');
@@ -77,7 +77,7 @@ test('can view edit article form', function () {
     $group = createArticleGroup();
     $article = createArticle($group, $user);
 
-    actingAs($user)
+    actingAs($user, adminium_guard())
         ->get(route('admin.articles.edit', $article))
         ->assertSuccessful()
         ->assertViewIs('articles::edit');
@@ -100,7 +100,7 @@ test('stores the published state when creating an article', function () {
         'cover_image' => UploadedFile::fake()->image('cover.jpg'),
     ];
 
-    actingAs($user)
+    actingAs($user, adminium_guard())
         ->post(route('admin.articles.store'), $data)
         ->assertRedirect(route('admin.articles.index'))
         ->assertSessionHas('success', 'Article created successfully');

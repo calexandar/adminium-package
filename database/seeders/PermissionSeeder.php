@@ -16,7 +16,7 @@ final class PermissionSeeder extends Seeder
     public function run(): void
     {
         foreach (UserPermissionName::cases() as $permission) {
-            Permission::create(['name' => $permission->value, 'guard_name' => 'web']);
+            Permission::findOrCreate($permission->value, adminium_permission_guard());
         }
     }
 }
